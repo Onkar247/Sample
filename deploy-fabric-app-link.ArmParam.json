@@ -3,65 +3,65 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "userAssignedIdentityResourceId": {
-      "value": "__userAssignedIdentityResourceId__"
+      "value": "[parameters('__userAssignedIdentityResourceId__')]"
     },
     "clusterName": {
-      "value": "__clusterNameBase__-__infraSuffix__"
+      "value": "[parameters('__clusterNameBase__-__infraSuffix__')]"
     },
     "location": {
-      "value": "__location__"
+      "value": "[parameters('__location__')]"
     },
     "applicationTypeName": {
-      "value": "SlimAppType"
+      "value": "[parameters('SlimAppType')]"
     },
     "applicationTypeVersion": {
       "value": "1.0.0-739a32d1"
     },
     "applicationName": {
-      "value": "__applicationName__"
+      "value": "[parameters('__applicationName__')]"
     },
     "applicationParameters": {
       "value": {
-        "ASPNETCORE_ENVIRONMENT": "__AspNetCoreEnvironment__",
-        "BackendProcessingLogic__QueueUris": "__appParam_BackendProcessingLogic__QueueUris__",
-        "BlobStoragesUris": "__appParam_BlobStoragesUris__",
-        "MetricGeneratorProcessingLogic__QueueUris": "__appParam_MetricGeneratorProcessingLogic__QueueUris__",
-        "Application__SubscriptionId": "__Application__SubscriptionId__",
-        "Application__ResourceGroupName": "__Application__ResourceGroupName__",
-        "Application__IcmEnvironment": "__Application__IcmEnvironment__",
-        "Application__Region__Full": "__Application__Region__Full__",
-        "Application__Region__Short": "__Application__Region__Short__",
-        "Application__Region__Long": "__Application__Region__Long__",
-        "Application__Stamp": "__Application__Stamp__-__infraSuffix__",
-        "KustoClusterUri": "__appParam_KustoClusterUri__",
-        "KustoLegacyClusterUri": "__appParam_KustoLegacyClusterUri__",
-        "QueuedIngestionUri": "__appParam_QueuedIngestionUri__",
-        "KustoReportsClusterUri": "__appParam_KustoReportsClusterUri__",
-        "ReportsQueuedIngestionUri": "__appParam_ReportsQueuedIngestionUri__",
-        "SslSubjectName": "sfmc-$location()-__infraSuffix__.__appParam_InfraClusterDomain__",
-        "NumberOfShards": "__appParam_NumberOfShards__",
-        "Backend_InstanceCount": "__appParam_Backend_InstanceCount__",
-        "BackendServiceMinInstanceCount": "__appParam_BackendServiceMinInstanceCount__",
-        "SLIMMetricGenerator_InstanceCount": "__appParam_SLIMMetricGenerator_InstanceCount__",
-        "MetricGeneratorServiceMinInstanceCount": "__appParam_MetricGeneratorServiceMinInstanceCount__",
+        "ASPNETCORE_ENVIRONMENT": "[parameters('__AspNetCoreEnvironment__')]",
+        "BackendProcessingLogic__QueueUris": "[parameters('__appParam_BackendProcessingLogic__QueueUris__')]",
+        "BlobStoragesUris": "[parameters('__appParam_BlobStoragesUris__')]",
+        "MetricGeneratorProcessingLogic__QueueUris": "[parameters('__appParam_MetricGeneratorProcessingLogic__QueueUris__')]",
+        "Application__SubscriptionId": "[parameters('__Application__SubscriptionId__')]",
+        "Application__ResourceGroupName": "[parameters('__Application__ResourceGroupName__')]",
+        "Application__IcmEnvironment": "[parameters('__Application__IcmEnvironment__')]",
+        "Application__Region__Full": "[parameters('__Application__Region__Full__')]",
+        "Application__Region__Short": "[parameters('__Application__Region__Short__')]",
+        "Application__Region__Long": "[parameters('__Application__Region__Long__')]",
+        "Application__Stamp": "[parameters('__Application__Stamp__-__infraSuffix__')]",
+        "KustoClusterUri": "[parameters('__appParam_KustoClusterUri__')]",
+        "KustoLegacyClusterUri": "[parameters('__appParam_KustoLegacyClusterUri__')]",
+        "QueuedIngestionUri": "[parameters('__appParam_QueuedIngestionUri__')]",
+        "KustoReportsClusterUri": "[parameters('__appParam_KustoReportsClusterUri__')]",
+        "ReportsQueuedIngestionUri": "[parameters('__appParam_ReportsQueuedIngestionUri__')]",
+        "SslSubjectName": "sfmc-$location()-__infraSuffix__.__appParam_InfraClusterDomain__')]",
+        "NumberOfShards": "[parameters('__appParam_NumberOfShards__')]",
+        "Backend_InstanceCount": "[parameters('__appParam_Backend_InstanceCount__')]",
+        "BackendServiceMinInstanceCount": "[parameters('__appParam_BackendServiceMinInstanceCount__')]",
+        "SLIMMetricGenerator_InstanceCount": "[parameters('__appParam_SLIMMetricGenerator_InstanceCount__')]",
+        "MetricGeneratorServiceMinInstanceCount": "[parameters('__appParam_MetricGeneratorServiceMinInstanceCount__')]",
         "ClientCertificateBase64": "##__appParam_ClientCertificateBase64__##",
-        "SnapshotAccount1StorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=__appParam_AccountName__;AccountKey=##__appParam_SnapshotAccountKey__##;EndpointSuffix=__appParam_StorageDomainNameSuffix__",
-        "documentDbEndpoint": "__appParam_documentDbEndpoint__",
+        "SnapshotAccount1StorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=__appParam_AccountName__;AccountKey=##__appParam_SnapshotAccountKey__##;EndpointSuffix=__appParam_StorageDomainNameSuffix__')]",
+        "documentDbEndpoint": "[parameters('__appParam_documentDbEndpoint__')]",
         "e2eTestWorkspaceId": "##__appParam_e2eTestWorkspaceId__##",
-        "SchedulerTenant": "__appParam_SchedulerTenant__",
+        "SchedulerTenant": "[parameters('__appParam_SchedulerTenant__')]",
         "GenevaCertificate": "##__appParam_GenevaCertificate__##",
         "SlimEndpoint": "https://__trafficManagerDnsRelativeDomain__/slim/",
-        "SlimAudience": "__appParam_SlimAudience__",
+        "SlimAudience": "[parameters('__appParam_SlimAudience__')]",
         "ShouldSetupKcmDiagnosticsKustoTables": "true",
-        "ShouldEmitHistograms": "__appParam_ShouldEmitHistograms__",
+        "ShouldEmitHistograms": "[parameters('__appParam_ShouldEmitHistograms__')]",
         "KcmRegistrationV2Enabled": "true",
-        "ApiAuthorization__AllowedTestIdentity": "__userAssignedIdentityApplicationId__",
-        "AmeIdentity__ClientId": "__userAssignedIdentityApplicationId__",
-        "AmeIdentity__ServicePrincipalObjectId": "__userAssignedIdentityPrincipalId__",
-        "RedisClientSettings__RedisHostName": "__appParam_RedisClientSettings__RedisHostName__",
+        "ApiAuthorization__AllowedTestIdentity": "[parameters('__userAssignedIdentityApplicationId__')]",
+        "AmeIdentity__ClientId": "[parameters('__userAssignedIdentityApplicationId__')]",
+        "AmeIdentity__ServicePrincipalObjectId": "[parameters('__userAssignedIdentityPrincipalId__')]",
+        "RedisClientSettings__RedisHostName": "[parameters('__appParam_RedisClientSettings__RedisHostName__')]",
         "RedisClientSettings__RedisPort": "6380",
-        "userAssignedIdentityResourceId": "__userAssignedIdentityResourceId__",
-        "UserAssignedIdentityName": "__userAssignedIdentityName__"
+        "userAssignedIdentityResourceId": "[parameters('__userAssignedIdentityResourceId__')]",
+        "UserAssignedIdentityName": "[parameters('__userAssignedIdentityName__')]",
       }
     }
   }
