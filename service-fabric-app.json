@@ -1,0 +1,261 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "clusterName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "applicationTypeName": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "applicationTypeVersion": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "applicationName": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "useManagedClusters": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "packageLink": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "sfmcFullAppTypeDeploymentName": "[take(concat(parameters('applicationTypeName'), '-', parameters('applicationTypeVersion'), '-SFMC-Type'), 64)]",
+    "sfrpFullAppTypeDeploymentName": "[take(concat(parameters('applicationTypeName'), '-', parameters('applicationTypeVersion'), '-SFRP-Type'), 64)]"
+  },
+  "resources": [
+    {
+      "condition": "[parameters('useManagedClusters')]",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('sfmcFullAppTypeDeploymentName')]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://infraarmtemplates.blob.core.windows.net/arm-templates/Arm-Templates/PackageDeployment/ServiceFabricManagedClusters/ApplicationType/azuredeploy.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "clusterName": {
+            "value": "[parameters('clusterName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "applicationTypeName": {
+            "value": "[parameters('applicationTypeName')]"
+          },
+          "applicationTypeVersion": {
+            "value": "[parameters('applicationTypeVersion')]"
+          },
+          "applicationPackageUrl": {
+            "value": "[parameters('packageLink')]"
+          }
+        }
+      }
+    },
+    {
+      "condition": "[parameters('useManagedClusters')]",
+      "apiVersion": "2017-05-10",
+      "name": "[concat(parameters('applicationName'), '-SFMC-App')]",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+        "[variables('sfmcFullAppTypeDeploymentName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://infraarmtemplates.blob.core.windows.net/arm-templates/Arm-Templates/PackageDeployment/ServiceFabricManagedClusters/Application-WIthMsi/azuredeploy.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "userAssignedIdentityResourceId": {
+            "value": "__userAssignedIdentityResourceId__"
+          },
+          "clusterName": {
+            "value": "__clusterNameBase__-__infraSuffix__"
+          },
+          "location": {
+            "value": "__location__"
+          },
+          "applicationTypeName": {
+            "value": "SlimAppType"
+          },
+          "applicationTypeVersion": {
+            "value": "1.0.0-739a32d1"
+          },
+          "applicationName": {
+            "value": "__applicationName__"
+          },
+          "applicationParameters": {
+            "value": {
+              "ASPNETCORE_ENVIRONMENT": "__AspNetCoreEnvironment__",
+              "BackendProcessingLogic__QueueUris": "__appParam_BackendProcessingLogic__QueueUris__",
+              "BlobStoragesUris": "__appParam_BlobStoragesUris__",
+              "MetricGeneratorProcessingLogic__QueueUris": "__appParam_MetricGeneratorProcessingLogic__QueueUris__",
+              "Application__SubscriptionId": "__Application__SubscriptionId__",
+              "Application__ResourceGroupName": "__Application__ResourceGroupName__",
+              "Application__IcmEnvironment": "__Application__IcmEnvironment__",
+              "Application__Region__Full": "__Application__Region__Full__",
+              "Application__Region__Short": "__Application__Region__Short__",
+              "Application__Region__Long": "__Application__Region__Long__",
+              "Application__Stamp": "__Application__Stamp__-__infraSuffix__",
+              "KustoClusterUri": "__appParam_KustoClusterUri__",
+              "KustoLegacyClusterUri": "__appParam_KustoLegacyClusterUri__",
+              "QueuedIngestionUri": "__appParam_QueuedIngestionUri__",
+              "KustoReportsClusterUri": "__appParam_KustoReportsClusterUri__",
+              "ReportsQueuedIngestionUri": "__appParam_ReportsQueuedIngestionUri__",
+              "SslSubjectName": "sfmc-$location()-__infraSuffix__.__appParam_InfraClusterDomain__",
+              "NumberOfShards": "__appParam_NumberOfShards__",
+              "Backend_InstanceCount": "__appParam_Backend_InstanceCount__",
+              "BackendServiceMinInstanceCount": "__appParam_BackendServiceMinInstanceCount__",
+              "SLIMMetricGenerator_InstanceCount": "__appParam_SLIMMetricGenerator_InstanceCount__",
+              "MetricGeneratorServiceMinInstanceCount": "__appParam_MetricGeneratorServiceMinInstanceCount__",
+              "ClientCertificateBase64": "##__appParam_ClientCertificateBase64__##",
+              "SnapshotAccount1StorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=__appParam_AccountName__;AccountKey=##__appParam_SnapshotAccountKey__##;EndpointSuffix=__appParam_StorageDomainNameSuffix__",
+              "documentDbEndpoint": "__appParam_documentDbEndpoint__",
+              "e2eTestWorkspaceId": "##__appParam_e2eTestWorkspaceId__##",
+              "SchedulerTenant": "__appParam_SchedulerTenant__",
+              "GenevaCertificate": "##__appParam_GenevaCertificate__##",
+              "SlimEndpoint": "https://__trafficManagerDnsRelativeDomain__/slim/",
+              "SlimAudience": "__appParam_SlimAudience__",
+              "ShouldSetupKcmDiagnosticsKustoTables": "true",
+              "ShouldEmitHistograms": "__appParam_ShouldEmitHistograms__",
+              "KcmRegistrationV2Enabled": "true",
+              "ApiAuthorization__AllowedTestIdentity": "__userAssignedIdentityApplicationId__",
+              "AmeIdentity__ClientId": "__userAssignedIdentityApplicationId__",
+              "AmeIdentity__ServicePrincipalObjectId": "__userAssignedIdentityPrincipalId__",
+              "RedisClientSettings__RedisHostName": "__appParam_RedisClientSettings__RedisHostName__",
+              "RedisClientSettings__RedisPort": "6380",
+              "userAssignedIdentityResourceId": "__userAssignedIdentityResourceId__",
+              "UserAssignedIdentityName": "__userAssignedIdentityName__"
+            }
+          }
+        }
+      }
+    },
+
+    {
+      "condition": "[not(parameters('useManagedClusters'))]",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('sfrpFullAppTypeDeploymentName')]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://infraarmtemplates.blob.core.windows.net/arm-templates/Arm-Templates/PackageDeployment/ServiceFabric/ApplicationType/azuredeploy.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "clusterName": {
+            "value": "[parameters('clusterName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "applicationTypeName": {
+            "value": "[parameters('applicationTypeName')]"
+          },
+          "applicationTypeVersion": {
+            "value": "[parameters('applicationTypeVersion')]"
+          },
+          "applicationPackageUrl": {
+            "value": "[parameters('packageLink')]"
+          }
+        }
+      }
+    },
+    {
+      "condition": "[not(parameters('useManagedClusters'))]",
+      "apiVersion": "2017-05-10",
+      "name": "[concat(parameters('applicationName'), '-SFRP-App')]",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+        "[variables('sfrpFullAppTypeDeploymentName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://infraarmtemplates.blob.core.windows.net/arm-templates/Arm-Templates/PackageDeployment/ServiceFabric/Application-WIthMsi/azuredeploy.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "userAssignedIdentityResourceId": {
+            "value": "__userAssignedIdentityResourceId__"
+          },
+          "clusterName": {
+            "value": "__clusterNameBase__-__infraSuffix__"
+          },
+          "location": {
+            "value": "__location__"
+          },
+          "applicationTypeName": {
+            "value": "SlimAppType"
+          },
+          "applicationTypeVersion": {
+            "value": "1.0.0-739a32d1"
+          },
+          "applicationName": {
+            "value": "__applicationName__"
+          },
+          "applicationParameters": {
+            "value": {
+              "ASPNETCORE_ENVIRONMENT": "__AspNetCoreEnvironment__",
+              "BackendProcessingLogic__QueueUris": "__appParam_BackendProcessingLogic__QueueUris__",
+              "BlobStoragesUris": "__appParam_BlobStoragesUris__",
+              "MetricGeneratorProcessingLogic__QueueUris": "__appParam_MetricGeneratorProcessingLogic__QueueUris__",
+              "Application__SubscriptionId": "__Application__SubscriptionId__",
+              "Application__ResourceGroupName": "__Application__ResourceGroupName__",
+              "Application__IcmEnvironment": "__Application__IcmEnvironment__",
+              "Application__Region__Full": "__Application__Region__Full__",
+              "Application__Region__Short": "__Application__Region__Short__",
+              "Application__Region__Long": "__Application__Region__Long__",
+              "Application__Stamp": "__Application__Stamp__-__infraSuffix__",
+              "KustoClusterUri": "__appParam_KustoClusterUri__",
+              "KustoLegacyClusterUri": "__appParam_KustoLegacyClusterUri__",
+              "QueuedIngestionUri": "__appParam_QueuedIngestionUri__",
+              "KustoReportsClusterUri": "__appParam_KustoReportsClusterUri__",
+              "ReportsQueuedIngestionUri": "__appParam_ReportsQueuedIngestionUri__",
+              "SslSubjectName": "sfmc-$location()-__infraSuffix__.__appParam_InfraClusterDomain__",
+              "NumberOfShards": "__appParam_NumberOfShards__",
+              "Backend_InstanceCount": "__appParam_Backend_InstanceCount__",
+              "BackendServiceMinInstanceCount": "__appParam_BackendServiceMinInstanceCount__",
+              "SLIMMetricGenerator_InstanceCount": "__appParam_SLIMMetricGenerator_InstanceCount__",
+              "MetricGeneratorServiceMinInstanceCount": "__appParam_MetricGeneratorServiceMinInstanceCount__",
+              "ClientCertificateBase64": "##__appParam_ClientCertificateBase64__##",
+              "SnapshotAccount1StorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=__appParam_AccountName__;AccountKey=##__appParam_SnapshotAccountKey__##;EndpointSuffix=__appParam_StorageDomainNameSuffix__",
+              "documentDbEndpoint": "__appParam_documentDbEndpoint__",
+              "e2eTestWorkspaceId": "##__appParam_e2eTestWorkspaceId__##",
+              "SchedulerTenant": "__appParam_SchedulerTenant__",
+              "GenevaCertificate": "##__appParam_GenevaCertificate__##",
+              "SlimEndpoint": "https://__trafficManagerDnsRelativeDomain__/slim/",
+              "SlimAudience": "__appParam_SlimAudience__",
+              "ShouldSetupKcmDiagnosticsKustoTables": "true",
+              "ShouldEmitHistograms": "__appParam_ShouldEmitHistograms__",
+              "KcmRegistrationV2Enabled": "true",
+              "ApiAuthorization__AllowedTestIdentity": "__userAssignedIdentityApplicationId__",
+              "AmeIdentity__ClientId": "__userAssignedIdentityApplicationId__",
+              "AmeIdentity__ServicePrincipalObjectId": "__userAssignedIdentityPrincipalId__",
+              "RedisClientSettings__RedisHostName": "__appParam_RedisClientSettings__RedisHostName__",
+              "RedisClientSettings__RedisPort": "6380",
+              "userAssignedIdentityResourceId": "__userAssignedIdentityResourceId__",
+              "UserAssignedIdentityName": "__userAssignedIdentityName__"
+            }
+          }
+        }
+      }
+    }
+
+  ],
+  "outputs": {}
+}
