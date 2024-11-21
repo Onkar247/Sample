@@ -1,0 +1,144 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "clusterName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "applicationTypeName": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "applicationTypeVersion": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "applicationName": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "useManagedClusters": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "applicationParametersLink": {
+      "type": "securestring"
+    },
+    "packageLink": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "sfmcFullAppTypeDeploymentName": "[take(concat(parameters('applicationTypeName'), '-', parameters('applicationTypeVersion'), '-SFMC-Type'), 64)]",
+    "sfrpFullAppTypeDeploymentName": "[take(concat(parameters('applicationTypeName'), '-', parameters('applicationTypeVersion'), '-SFRP-Type'), 64)]"
+  },
+  "resources": [
+    {
+      "condition": "[parameters('useManagedClusters')]",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('sfmcFullAppTypeDeploymentName')]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://infraarmtemplates.blob.core.windows.net/arm-templates/Arm-Templates/PackageDeployment/ServiceFabricManagedClusters/ApplicationType/azuredeploy.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "clusterName": {
+            "value": "[parameters('clusterName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "applicationTypeName": {
+            "value": "[parameters('applicationTypeName')]"
+          },
+          "applicationTypeVersion": {
+            "value": "[parameters('applicationTypeVersion')]"
+          },
+          "applicationPackageUrl": {
+            "value": "[parameters('packageLink')]"
+          }
+        }
+      }
+    },
+    {
+      "condition": "[parameters('useManagedClusters')]",
+      "apiVersion": "2017-05-10",
+      "name": "[concat(parameters('applicationName'), '-SFMC-App')]",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+        "[variables('sfmcFullAppTypeDeploymentName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://infraarmtemplates.blob.core.windows.net/arm-templates/Arm-Templates/PackageDeployment/ServiceFabricManagedClusters/Application-WIthMsi/azuredeploy.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parametersLink": {
+          "contentVersion": "1.0.0.0",
+          "uri": "[parameters('applicationParametersLink')]"
+        }
+      }
+    },
+
+        {
+      "condition": "[not(parameters('useManagedClusters'))]",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('sfrpFullAppTypeDeploymentName')]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://infraarmtemplates.blob.core.windows.net/arm-templates/Arm-Templates/PackageDeployment/ServiceFabric/ApplicationType/azuredeploy.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "clusterName": {
+            "value": "[parameters('clusterName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "applicationTypeName": {
+            "value": "[parameters('applicationTypeName')]"
+          },
+          "applicationTypeVersion": {
+            "value": "[parameters('applicationTypeVersion')]"
+          },
+          "applicationPackageUrl": {
+            "value": "[parameters('packageLink')]"
+          }
+        }
+      }
+    },
+    {
+      "condition": "[not(parameters('useManagedClusters'))]",
+      "apiVersion": "2017-05-10",
+      "name": "[concat(parameters('applicationName'), '-SFRP-App')]",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+        "[variables('sfrpFullAppTypeDeploymentName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://infraarmtemplates.blob.core.windows.net/arm-templates/Arm-Templates/PackageDeployment/ServiceFabric/Application-WIthMsi/azuredeploy.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parametersLink": {
+          "contentVersion": "1.0.0.0",
+          "uri": "[parameters('applicationParametersLink')]"
+        }
+      }
+    }
+
+  ],
+  "outputs": {}
+}
