@@ -13,6 +13,9 @@
     },
     "storageTier": {
       "type": "string"
+    },
+    "allowSharedKeyAccess": {
+      "type": "bool"
     }
   },
   "variables": {
