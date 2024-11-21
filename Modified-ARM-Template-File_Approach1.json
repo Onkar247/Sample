@@ -17,6 +17,9 @@
     "useManagedClusters": {
       "type": "bool",
       "defaultValue": true
+    },
+    "applicationParametersLink": {
+      "type": "securestring"
     }
   },
   "variables": {
