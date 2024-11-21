@@ -25,6 +25,9 @@
       "type": "bool",
       "defaultValue": true
     },
+    "applicationParametersLink":{
+      "type": "Securestring"
+    },
     "nestedParameterObject": {
       "type": "object"
     }
@@ -52,19 +55,19 @@
             "value": "[parameters('nestedParameterObject').clusterName]"
           },
           "location": {
-            "value": "[parameters('nestedParameterObject').location]"
+            "value": "[parameters('nestedParameterObject').location.value]"
           },
           "applicationName": {
-            "value": "[parameters('nestedParameterObject').applicationName]"
+            "value": "[parameters('nestedParameterObject').applicationName.value]"
           },
           "applicationTypeName": {
-            "value": "[parameters('nestedParameterObject').applicationTypeName]"
+            "value": "[parameters('nestedParameterObject').applicationTypeName.value]"
           },
           "applicationTypeVersion": {
-            "value": "[parameters('nestedParameterObject').applicationTypeVersion]"
+            "value": "[parameters('nestedParameterObject').applicationTypeVersion.value]"
           },
           "applicationParameters": {
-            "value": "[parameters('nestedParameterObject').applicationParameters]"
+            "value": "[parameters('nestedParameterObject').applicationParameters.value]"
           },
           "userAssignedIdentityResourceId": {
             "value": "[parameters('nestedParameterObject').userAssignedIdentityResourceId]"
