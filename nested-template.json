@@ -34,7 +34,7 @@
       },
       "properties": {
         "accessTier": "Cool",
-        "allowSharedKeyAccess": "parameters('allowSharedKeyAccess')"
+        "allowSharedKeyAccess": "[parameters('allowSharedKeyAccess')]"
       }
     }
   ]
